@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
         get => GetComponent<CharacterController>();
     }
 
-    Vector3 facingDirection = Vector3.zero;
+    public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
     public float moveDelay = 0f;
     const int moveDistance = 1;
@@ -102,8 +102,6 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
-
-
 
 
     private void OnCollisionEnter(Collision collision)

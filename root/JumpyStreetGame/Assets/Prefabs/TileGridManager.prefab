@@ -57,9 +57,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2f598fcfa5f32141bb6e3803664bae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingHeight: 77
+  currentHeight: 0
   Grid: {fileID: 1714342965306180969}
   tilePrefabs:
   - {fileID: 8394736220879901335, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
   OnTileGenerate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
