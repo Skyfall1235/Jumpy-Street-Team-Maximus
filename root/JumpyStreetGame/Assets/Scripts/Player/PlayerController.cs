@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
+
+//Search for //NOT FINISHED to continue work
 public class PlayerController : MonoBehaviour
 {
+
     Transform playerTransform
     {
         get => transform.parent;
@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     {
         get => GetComponent<CharacterController>();
     }
+
+    Vector3 facingDirection = Vector3.zero;
 
     public float moveDelay = 0f;
     const int moveDistance = 1;
