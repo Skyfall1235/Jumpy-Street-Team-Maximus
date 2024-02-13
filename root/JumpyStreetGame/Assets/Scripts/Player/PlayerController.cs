@@ -6,14 +6,9 @@ using UnityEngine;
 //Search for //NOT FINISHED to continue work
 public class PlayerController : MonoBehaviour
 {
-
-    Transform playerTransform
-    {
-        get => transform.parent;
-    }
     CharacterController charController
     {
-        get => GetComponent<CharacterController>();
+        get => transform.parent.GetComponent<CharacterController>();
     }
 
     public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
@@ -21,27 +16,63 @@ public class PlayerController : MonoBehaviour
     public float moveDelay = 0f;
     const int moveDistance = 1;
 
+    void Update()
+    {
+        Vector3 moveDir = DetemineMoveDirection();
+        if (moveDir != Vector3.zero)
+        {
+            AttemptMove(moveDir);
+        }
+    }
+
+    Vector3 DetemineMoveDirection()
+    {
+
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            facingDirection = Vector3.forward;
+            return facingDirection;
+        }
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            facingDirection = Vector3.left;
+            return facingDirection;
+        }
+        if( Input.GetKeyDown(KeyCode.D)) 
+        {
+            facingDirection = Vector3.right;
+            return facingDirection;
+        }
+        return Vector3.zero;
+        
+    }
+
 
     #region Movement and static obsticle/hazard handling
 
     //NOT FINISHED
-    void AttemptMove()
+    void AttemptMove(Vector3 moveDir)
     {
+        Debug.Log("Attempting to move");
         //accept input vector, shoot raycast in that direction, detect collider. if collider has a script of type 
-        Vector3 move = playerTransform.position;
-        GameObject moveSpace = SearchMoveDirection(move);
+
+        GameObject moveSpace = SearchMoveDirection(moveDir);
 
         #region Check move validity
 
         //check to see if the move is valid within the bounds of the map
-        if (IsMoveOutOfMapBounds() == true) { return; } 
+        if (IsMoveOutOfMapBounds(moveDir) == true) { return; } 
 
         //check if its a static obsticle
-        if(CheckForObstruction(moveSpace)) { return; }
+        if (moveSpace != null)
+        {
+            if (CheckForObstruction(moveSpace)) { return; }
+        }
+        
 
         #endregion
 
-        MovePlayer(move);
+        MovePlayer(moveDir);
     }
 
     private void MovePlayer(Vector3 direction)
@@ -80,17 +111,18 @@ public class PlayerController : MonoBehaviour
 
     Obsticle FindObsticle(GameObject searchedObject)
     {
-        //this code will determine how the movement system works, if its viable to move on, it should, if its static it should block movement and immedeiately allow theplayer to attempt to move again
         return searchedObject.GetComponent<Obsticle>();
     }
 
     //NOT FINISHED
-    bool IsMoveOutOfMapBounds()
+    bool IsMoveOutOfMapBounds(Vector3 localDirection)
     {
-        const int minBound = 15;
-        const int maxBound = 0;
-
-
+        //creates a world space vector that shows the potnetial move direction
+        Vector3 actualizedMoveDirection = transform.parent.position + localDirection;
+        //cons for known outer bounds
+        const int minXBound = 0;
+        const int maxXBound = 70;
+        if (actualizedMoveDirection.x > maxXBound || actualizedMoveDirection.x > minXBound) { return true; }
         return false;
     }
 

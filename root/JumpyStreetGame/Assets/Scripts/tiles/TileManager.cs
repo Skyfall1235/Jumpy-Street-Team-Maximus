@@ -13,7 +13,9 @@ public class TileManager : MonoBehaviour
 
     public Grid Grid;
 
-    public GameObject[] tilePrefabs;
+    public GameObject[] baseTilePrefabs;
+    public GameObject[] roadTilePrefabs;
+    public GameObject[] riverTilePrefabs;
 
     private Transform ManagerTransform
     {
@@ -36,17 +38,15 @@ public class TileManager : MonoBehaviour
         for (int y = 0; y < startingHeight; y++)
         {
             currentHeight++;
-            for (int x = 0; x < width; x++)
-            {
-                InstatiateTileAtCoorinate(x, y);
-            }
+            InstatiateTileAtCoorinate(y);
+            
         }
     }
 
     /// <summary>
     /// Generates a single horizontal row of tiles at the current height level
     /// </summary>
-    void GenerateNextTile()
+    void GenerateNextTileSet()
     {
         for (int x = 0; x < width; x++)
         {
@@ -55,6 +55,7 @@ public class TileManager : MonoBehaviour
             currentHeight++;
             tile.transform.parent = ManagerTransform;
         }
+
     }
 
     /// <summary>
@@ -65,18 +66,35 @@ public class TileManager : MonoBehaviour
     /// <returns></returns>
     GameObject InstatiateTileAtCoorinate(int x, int y)
     {
-        GameObject newTile = Instantiate(chooseTilePrefab(), Grid.GetCellCenterWorld(new Vector3Int((int)x, 0, (int)y)), Quaternion.identity);
+        GameObject newTile = Instantiate(chooseTilePrefabSet(), Grid.GetCellCenterWorld(new Vector3Int((int)x, 0, (int)y)), Quaternion.identity);
         newTile.transform.parent = ManagerTransform;
         return newTile;
     }
 
-    /// <summary>
-    /// Selects a random tile prefab from the available set
-    /// </summary>
-    /// <returns></returns>
-    GameObject chooseTilePrefab()
+
+    GameObject[] chooseTilePrefabSet()
     {
-        return tilePrefabs[Random.Range(0, tilePrefabs.Length)];
+        int tileSetChoice = Random.Range(1, 11);//its exclusive :(
+        //choose if its a road, river, or normal tile
+        //give bias to the normal tile
+        switch (tileSetChoice)
+        {
+            case 1: case 2:
+                return roadTilePrefabs;
+            case 3:case 4:
+                return riverTilePrefabs;
+            default:
+                return baseTilePrefabs;
+        }
+    }
+    GameObject GenerateTileRow(int height)
+    {
+        GameObject
+    }
+
+    GameObject GiveRandomTile()
+    {
+        return baseTilePrefabs[Random.Range(0, baseTilePrefabs.Length)];
     }
 
     //TO DO: 
