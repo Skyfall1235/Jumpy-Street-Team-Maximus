@@ -6,7 +6,8 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Grid))]
 public class TileManager : MonoBehaviour
 {
-    const int width = 10;
+    const int width = 5;
+
     [Range(0, 100)]
     [SerializeField] private int startingHeight = 2;
     [SerializeField] private int currentHeight;
@@ -34,59 +35,24 @@ public class TileManager : MonoBehaviour
     /// </summary>
     void GenerateStarterTiles()
     {
-        
+        //for each collum in the starting height
         for (int y = 0; y < startingHeight; y++)
         {
+            GenerateTileRow();
             currentHeight++;
-            //InstatiateTileAtCoorinate(y);
-            
         }
     }
 
     GameObject GenerateTileRow()
     {
-        GameObject tileRow = new GameObject();
-        tileRow.transform.parent = ManagerTransform;
-        for (int x = 0; x < width; x++)
-        {
-            //choose the tileset prefab list
-            GameObject[] ChosenTileSet = ChooseTilePrefabSet();
+        //choose the tileset prefab list for the row
+        GameObject[] ChosenTileSet = ChooseTilePrefabSet();
+        GameObject randomRowFromSet = ChosenTileSet[Random.Range(0, ChosenTileSet.Length)];
 
-            if (ChosenTileSet == baseTilePrefabs)
-            {
-                //generate the next set, and then bump the y val
-                GameObject tile = InstatiateTileAtCoorinate(x, currentHeight + 1, GiveRandomBaseTileSet());
-
-                //set the transform, and move on
-                tile.transform.parent = tileRow.transform;
-            }
-            else
-            {
-                //no need to figure out the type, they work the same.
-                //spawn first prefab first, fill with width-2, and then slap on the end tile.
-
-            }
-            currentHeight++;
-        }
-        return tileRow;
-    }
-
-
-
-    /// <summary>
-    /// Spawns a tile at the given coordinates using the chosen tile prefab
-    /// </summary>
-    /// <param name="x">the x corrdinate of the grid</param>
-    /// <param name="y">the y coordinate of the grid</param>
-    /// <param name="tileObject">The prefab object we want to generate</param>
-    /// <returns>the tile that was generated based on TileObject</returns>
-    GameObject InstatiateTileAtCoorinate(int x, int y, GameObject tileObject)
-    {
-        GameObject newTile = Instantiate(tileObject, Grid.GetCellCenterWorld(new Vector3Int((int)x, 0, (int)y)), Quaternion.identity);
+        GameObject newTile = Instantiate(randomRowFromSet, Grid.GetCellCenterWorld(new Vector3Int(0, 0, currentHeight)), Quaternion.identity);
         newTile.transform.parent = ManagerTransform;
         return newTile;
     }
-
 
     GameObject[] ChooseTilePrefabSet()
     {
@@ -103,12 +69,7 @@ public class TileManager : MonoBehaviour
                 return baseTilePrefabs;
         }
     }
-    
 
-    GameObject GiveRandomBaseTileSet()
-    {
-        return baseTilePrefabs[Random.Range(0, baseTilePrefabs.Length)];
-    }
 
     //TO DO: 
     /*  - randomly select a tile section to generate

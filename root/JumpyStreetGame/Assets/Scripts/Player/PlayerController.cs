@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
     public float moveDelay = 0f;
-    const int moveDistance = 1;
 
     void Update()
     {
@@ -27,7 +26,6 @@ public class PlayerController : MonoBehaviour
 
     Vector3 DetemineMoveDirection()
     {
-
         if(Input.GetKeyDown(KeyCode.W))
         {
             facingDirection = Vector3.forward;
@@ -44,9 +42,7 @@ public class PlayerController : MonoBehaviour
             return facingDirection;
         }
         return Vector3.zero;
-        
     }
-
 
     #region Movement and static obsticle/hazard handling
 
@@ -61,7 +57,7 @@ public class PlayerController : MonoBehaviour
         #region Check move validity
 
         //check to see if the move is valid within the bounds of the map
-        if (IsMoveOutOfMapBounds(moveDir) == true) { return; } 
+        //if (IsMoveOutOfMapBounds(moveDir) == true) { return; } 
 
         //check if its a static obsticle
         if (moveSpace != null)
@@ -81,10 +77,18 @@ public class PlayerController : MonoBehaviour
         charController.Move(direction);
     }
 
-    //NOT FINISHED
-    private void HandleHazard()
+    private void SetCurrentTileAsParent()
     {
-        // not sure on what to do here, maybe just use a unity event and play the death animation/ show the death UI?
+        //shoot raycast down to get tile row
+        RaycastHit hit;
+        const float length = 1.1f;
+        // Perform the raycast
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, length))
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            //set the transform of the player to be the object
+            transform.parent.parent = hitObject.transform;
+        }
     }
 
     #endregion

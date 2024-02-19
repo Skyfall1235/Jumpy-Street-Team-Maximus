@@ -15,7 +15,7 @@ public class Car_Hazard : MonoBehaviour
     {
         // The car is spawned as a child of the Car Spawner object
         // The Car_Generator script contains variables for the start and end points
-        startPoint = gameObject.GetComponentInParent<Car_Generator>().startPoint;
+        startPoint = gameObject.transform.parent;
         endPoint = gameObject.GetComponentInParent<Car_Generator>().endPoint;
     }
 
@@ -23,7 +23,14 @@ public class Car_Hazard : MonoBehaviour
     {
         // the lerpRatio variable increases over time and is used the move the car to the endpoint
         lerpRatio += (Time.deltaTime * speed);
-        gameObject.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, lerpRatio);
+        if(!gameObject.GetComponentInParent<Car_Generator>().facingLeft)
+        {
+            gameObject.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, lerpRatio);
+        }
+        else
+        {
+            gameObject.transform.position = Vector3.Lerp(endPoint.position, startPoint.position, lerpRatio);
+        }
         // Once the car reaches the endpoint, it destroys itself
         if (lerpRatio >= 1f)
         {
