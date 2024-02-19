@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 //Search for //NOT FINISHED to continue work
@@ -14,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
     public float moveDelay = 0f;
+
+    public UnityEvent onSuccessfulMove = new UnityEvent();
+    public UnityEvent onSuccessfulForwardMove = new UnityEvent();
 
     void Update()
     {
@@ -75,6 +79,11 @@ public class PlayerController : MonoBehaviour
     {
         //as the direction with be a type of Vector3.(direction), it should be of value 1, and move the char controller properly
         charController.Move(direction);
+        onSuccessfulMove.Invoke();
+        if(direction == Vector3.forward)
+        {
+            onSuccessfulForwardMove.Invoke();
+        }
     }
 
     private void SetCurrentTileAsParent()
