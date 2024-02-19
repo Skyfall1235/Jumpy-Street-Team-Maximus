@@ -38,41 +38,57 @@ public class TileManager : MonoBehaviour
         for (int y = 0; y < startingHeight; y++)
         {
             currentHeight++;
-            InstatiateTileAtCoorinate(y);
+            //InstatiateTileAtCoorinate(y);
             
         }
     }
 
-    /// <summary>
-    /// Generates a single horizontal row of tiles at the current height level
-    /// </summary>
-    void GenerateNextTileSet()
+    GameObject GenerateTileRow()
     {
+        GameObject tileRow = new GameObject();
+        tileRow.transform.parent = ManagerTransform;
         for (int x = 0; x < width; x++)
         {
-            //generate the next set, and then bump the y val
-            GameObject tile = InstatiateTileAtCoorinate(x, currentHeight+1);
-            currentHeight++;
-            tile.transform.parent = ManagerTransform;
-        }
+            //choose the tileset prefab list
+            GameObject[] ChosenTileSet = ChooseTilePrefabSet();
 
+            if (ChosenTileSet == baseTilePrefabs)
+            {
+                //generate the next set, and then bump the y val
+                GameObject tile = InstatiateTileAtCoorinate(x, currentHeight + 1, GiveRandomBaseTileSet());
+
+                //set the transform, and move on
+                tile.transform.parent = tileRow.transform;
+            }
+            else
+            {
+                //no need to figure out the type, they work the same.
+                //spawn first prefab first, fill with width-2, and then slap on the end tile.
+
+            }
+            currentHeight++;
+        }
+        return tileRow;
     }
+
+
 
     /// <summary>
     /// Spawns a tile at the given coordinates using the chosen tile prefab
     /// </summary>
     /// <param name="x">the x corrdinate of the grid</param>
-    /// <param name="y"></param>
-    /// <returns></returns>
-    GameObject InstatiateTileAtCoorinate(int x, int y)
+    /// <param name="y">the y coordinate of the grid</param>
+    /// <param name="tileObject">The prefab object we want to generate</param>
+    /// <returns>the tile that was generated based on TileObject</returns>
+    GameObject InstatiateTileAtCoorinate(int x, int y, GameObject tileObject)
     {
-        GameObject newTile = Instantiate(chooseTilePrefabSet(), Grid.GetCellCenterWorld(new Vector3Int((int)x, 0, (int)y)), Quaternion.identity);
+        GameObject newTile = Instantiate(tileObject, Grid.GetCellCenterWorld(new Vector3Int((int)x, 0, (int)y)), Quaternion.identity);
         newTile.transform.parent = ManagerTransform;
         return newTile;
     }
 
 
-    GameObject[] chooseTilePrefabSet()
+    GameObject[] ChooseTilePrefabSet()
     {
         int tileSetChoice = Random.Range(1, 11);//its exclusive :(
         //choose if its a road, river, or normal tile
@@ -87,12 +103,9 @@ public class TileManager : MonoBehaviour
                 return baseTilePrefabs;
         }
     }
-    GameObject GenerateTileRow(int height)
-    {
-        GameObject
-    }
+    
 
-    GameObject GiveRandomTile()
+    GameObject GiveRandomBaseTileSet()
     {
         return baseTilePrefabs[Random.Range(0, baseTilePrefabs.Length)];
     }
