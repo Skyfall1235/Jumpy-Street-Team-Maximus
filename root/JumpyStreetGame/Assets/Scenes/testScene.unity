@@ -313,6 +313,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 2236534251324266353, guid: e177109bf52d74b44a19b99623c3ff43, type: 3}
     - target: {fileID: 3644052669075397852, guid: caa490c6cda417d4cb8230316374e362, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
