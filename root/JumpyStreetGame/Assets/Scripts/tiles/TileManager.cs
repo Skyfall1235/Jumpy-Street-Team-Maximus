@@ -47,7 +47,10 @@ public class TileManager : MonoBehaviour
     {
         //choose the tileset prefab list for the row
         GameObject[] ChosenTileSet = ChooseTilePrefabSet();
-        GameObject randomRowFromSet = ChosenTileSet[Random.Range(0, ChosenTileSet.Length)];
+        //choose a random number within the tile set
+        int randomNum = Random.Range(0, ChosenTileSet.Length);
+        //set the tile row to the chosen tile from the random number
+        GameObject randomRowFromSet = ChosenTileSet[randomNum];
 
         GameObject newTile = Instantiate(randomRowFromSet, Grid.GetCellCenterWorld(new Vector3Int(0, 0, currentHeight)), Quaternion.identity);
         newTile.transform.parent = ManagerTransform;

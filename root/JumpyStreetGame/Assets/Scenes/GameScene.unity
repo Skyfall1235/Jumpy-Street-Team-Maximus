@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -418,8 +418,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: startingHeight
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
       propertyPath: baseTilePrefabs.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
       propertyPath: baseTilePrefabs.Array.data[1]
@@ -431,6 +435,22 @@ PrefabInstance:
       objectReference: {fileID: 2630291334490785825, guid: b851ce20adb4851488bf7b043b395860, type: 3}
     - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
       propertyPath: baseTilePrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 2514638172232597679, guid: f652e73260d38d1449ae780c75508cbf, type: 3}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 2514638172232597679, guid: f652e73260d38d1449ae780c75508cbf, type: 3}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 8394736220879901335, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.data[6]
+      value: 
+      objectReference: {fileID: 2514638172232597679, guid: f652e73260d38d1449ae780c75508cbf, type: 3}
+    - target: {fileID: 3334322611108800215, guid: caa490c6cda417d4cb8230316374e362, type: 3}
+      propertyPath: baseTilePrefabs.Array.data[7]
       value: 
       objectReference: {fileID: 2514638172232597679, guid: f652e73260d38d1449ae780c75508cbf, type: 3}
     - target: {fileID: 3644052669075397852, guid: caa490c6cda417d4cb8230316374e362, type: 3}

@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
         #endregion
 
         MovePlayer(moveDir);
+        SetCurrentTileAsParent();
     }
 
     private void MovePlayer(Vector3 direction)
