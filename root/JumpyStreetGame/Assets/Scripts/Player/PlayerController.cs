@@ -14,7 +14,13 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
-    public float moveDelay = 0f;
+    public float moveDelay = 0.1f; // time it takes for the player to move
+
+    public float moveDistance = 2.5f; // how far the player moves
+
+    private bool canMove = true; // if the player is able to move
+
+    public Animator anim;
 
     public GameObject deathPanel;
 
@@ -23,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 1;
+        canMove = true;
         deathPanel.SetActive(false);
     }
 
@@ -36,27 +42,33 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            // resets the character controller position if the player is on a log
             charController.center = transform.position;
         }
     }
 
     Vector3 DetemineMoveDirection()
     {
-        if(Input.GetKeyDown(KeyCode.W))
+        if (canMove)
         {
-            facingDirection = Vector3.forward * 2.5f;
-            return facingDirection;
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                facingDirection = Vector3.forward * moveDistance;
+                return facingDirection;
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                facingDirection = Vector3.left * moveDistance;
+                return facingDirection;
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                facingDirection = Vector3.right * moveDistance;
+                return facingDirection;
+            }
+            return Vector3.zero;
         }
-        if(Input.GetKeyDown(KeyCode.A))
-        {
-            facingDirection = Vector3.left * 2.5f;
-            return facingDirection;
-        }
-        if( Input.GetKeyDown(KeyCode.D)) 
-        {
-            facingDirection = Vector3.right * 2.5f;
-            return facingDirection;
-        }
+        
         return Vector3.zero;
     }
 
@@ -83,20 +95,38 @@ public class PlayerController : MonoBehaviour
         
 
         #endregion
-
-        MovePlayer(moveDir);
-        SetCurrentTileAsParent();
+        StartCoroutine(MovePlayer(moveDir));
     }
 
-    private void MovePlayer(Vector3 direction)
+    // Moves the player frame by frame
+    private IEnumerator MovePlayer(Vector3 direction)
     {
-        //as the direction with be a type of Vector3.(direction), it should be of value 1, and move the char controller properly
-        charController.Move(direction);
+        // disconnects the player from the current parent (so if the player is on a log, it will not move with the log while hopping)
+        transform.parent.parent = null;
+        // plays the hopping animation
+        anim.SetTrigger("Move");
+        // player cannot move again until the current movement is done
+        canMove = false;
+
+        for (float i = 0; i < moveDelay; i += Time.deltaTime)
+        {
+            float dist = Time.deltaTime / moveDelay;
+            charController.Move(direction * dist);
+            yield return null;
+        }
+
         onSuccessfulMove.Invoke();
-        if(direction == Vector3.forward)
+        if(direction == Vector3.forward * moveDistance)
         {
             onSuccessfulForwardMove.Invoke();
         }
+        // allows the player to move again
+        canMove = true;
+        // realigns player position
+        SnapPlayerToGrid();
+        // attaches player to the tile it is standing on
+        SetCurrentTileAsParent();
+        Debug.Log(transform.parent.position);
     }
 
     private void SetCurrentTileAsParent()
@@ -111,10 +141,21 @@ public class PlayerController : MonoBehaviour
             //set the transform of the player to be the object
             transform.parent.parent = hitObject.transform;
         }
-        else
+        else // if there is no ground beneath the player, they fall and die (the water tile is lowered slightly so the raycast will not reach it)
         {
             Die();
         }
+    }
+
+    // Adjusts the player's position so it is aligned with everything else
+    private void SnapPlayerToGrid()
+    {
+        // Gets the player position and calculates where it should be
+        float gridSpaceX = Mathf.Round(transform.parent.position.x / moveDistance);
+        float gridSpaceZ = Mathf.Round((transform.parent.position.z - 1.25f) / moveDistance);
+        // Sets the position
+        Vector3 newPosition = new Vector3(gridSpaceX * moveDistance, 1.5f, (gridSpaceZ * moveDistance) + 1.25f);
+        transform.parent.SetPositionAndRotation(newPosition, Quaternion.identity);
     }
 
     #endregion
@@ -124,7 +165,7 @@ public class PlayerController : MonoBehaviour
     GameObject SearchMoveDirection(Vector3 direction)
     {
         RaycastHit hit;
-        const float length = 2.5f;
+        float length = moveDistance;
         // Perform the raycast
         if (Physics.Raycast(transform.position, direction, out hit, length))
         {
@@ -166,8 +207,8 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
+        canMove = false;
         deathPanel.SetActive(true);
-        Time.timeScale = 0;
     }
 
     private void OnTriggerEnter(Collider collider)
