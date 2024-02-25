@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Hazard
       objectReference: {fileID: 0}
+    - target: {fileID: 6470922012472105010, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 7603839443617476837, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -68,29 +72,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterTile
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2481275670355978837, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4814076935138658771, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 394580737606736227}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
---- !u!1 &8561881064859437535 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4814076935138658771, guid: 192ba948d769f4f4087de89faac5d204, type: 3}
-  m_PrefabInstance: {fileID: 3755685431224582156}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &394580737606736227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8561881064859437535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fe06317969955542ac31710c1b2028f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  obstructionType: 1

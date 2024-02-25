@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Car_Hazard : MonoBehaviour
 {
-    [SerializeField] private float speed = 0.25f; // how fast the cars move
+    [SerializeField] private float speed = 5f; // how fast the cars move
 
-    [SerializeField] private float lerpRatio = 0; // controls how far along the car is: 0 - startpoint 1 - endpoint
+    private Rigidbody rb;
 
     private Transform startPoint; // point where the car spawns
     private Transform endPoint; // point where the car despawns
@@ -15,24 +17,36 @@ public class Car_Hazard : MonoBehaviour
     {
         // The car is spawned as a child of the Car Spawner object
         // The Car_Generator script contains variables for the start and end points
+        rb = GetComponent<Rigidbody>();
         startPoint = gameObject.transform.parent;
         endPoint = gameObject.GetComponentInParent<Car_Generator>().endPoint;
+
+        // Determines if the car will move left or right
+        if (!gameObject.GetComponentInParent<Car_Generator>().facingLeft)
+        {
+            rb.velocity = Vector3.right * speed;
+        }
+        else
+        {
+            rb.velocity = Vector3.left * speed;
+        }
     }
 
     void Update()
     {
-        // the lerpRatio variable increases over time and is used the move the car to the endpoint
-        lerpRatio += (Time.deltaTime * speed);
+        // the distance between the car and its endpoint
+        float diff;
         if(!gameObject.GetComponentInParent<Car_Generator>().facingLeft)
         {
-            gameObject.transform.position = Vector3.Lerp(startPoint.position, endPoint.position, lerpRatio);
+            diff = Mathf.Abs(gameObject.transform.position.x - endPoint.position.x);
         }
         else
         {
-            gameObject.transform.position = Vector3.Lerp(endPoint.position, startPoint.position, lerpRatio);
+            diff = Mathf.Abs(gameObject.transform.position.x - startPoint.position.x);
         }
+
         // Once the car reaches the endpoint, it destroys itself
-        if (lerpRatio >= 1f)
+        if (diff < 0.1f)
         {
             Destroy(gameObject);
         }

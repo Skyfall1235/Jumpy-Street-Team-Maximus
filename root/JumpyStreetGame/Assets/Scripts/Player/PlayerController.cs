@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.SceneManagement;
 
 //Search for //NOT FINISHED to continue work
 public class PlayerController : MonoBehaviour
@@ -16,8 +16,16 @@ public class PlayerController : MonoBehaviour
 
     public float moveDelay = 0f;
 
+    public GameObject deathPanel;
+
     public UnityEvent onSuccessfulMove = new UnityEvent();
     public UnityEvent onSuccessfulForwardMove = new UnityEvent();
+
+    private void Start()
+    {
+        Time.timeScale = 1;
+        deathPanel.SetActive(false);
+    }
 
     void Update()
     {
@@ -26,23 +34,27 @@ public class PlayerController : MonoBehaviour
         {
             AttemptMove(moveDir);
         }
+        else
+        {
+            charController.center = transform.position;
+        }
     }
 
     Vector3 DetemineMoveDirection()
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
-            facingDirection = Vector3.forward;
+            facingDirection = Vector3.forward * 2.5f;
             return facingDirection;
         }
         if(Input.GetKeyDown(KeyCode.A))
         {
-            facingDirection = Vector3.left;
+            facingDirection = Vector3.left * 2.5f;
             return facingDirection;
         }
         if( Input.GetKeyDown(KeyCode.D)) 
         {
-            facingDirection = Vector3.right;
+            facingDirection = Vector3.right * 2.5f;
             return facingDirection;
         }
         return Vector3.zero;
@@ -61,7 +73,7 @@ public class PlayerController : MonoBehaviour
         #region Check move validity
 
         //check to see if the move is valid within the bounds of the map
-        //if (IsMoveOutOfMapBounds(moveDir) == true) { return; } 
+        if (IsMoveOutOfMapBounds(moveDir) == true) { return; } 
 
         //check if its a static obsticle
         if (moveSpace != null)
@@ -91,13 +103,17 @@ public class PlayerController : MonoBehaviour
     {
         //shoot raycast down to get tile row
         RaycastHit hit;
-        const float length = 1.1f;
+        const float length = 1.2f;
         // Perform the raycast
         if (Physics.Raycast(transform.position, Vector3.down, out hit, length))
         {
             GameObject hitObject = hit.collider.gameObject;
             //set the transform of the player to be the object
             transform.parent.parent = hitObject.transform;
+        }
+        else
+        {
+            Die();
         }
     }
 
@@ -108,7 +124,7 @@ public class PlayerController : MonoBehaviour
     GameObject SearchMoveDirection(Vector3 direction)
     {
         RaycastHit hit;
-        const int length = 1;
+        const float length = 2.5f;
         // Perform the raycast
         if (Physics.Raycast(transform.position, direction, out hit, length))
         {
@@ -128,15 +144,14 @@ public class PlayerController : MonoBehaviour
         return searchedObject.GetComponent<Obsticle>();
     }
 
-    //NOT FINISHED
     bool IsMoveOutOfMapBounds(Vector3 localDirection)
     {
         //creates a world space vector that shows the potnetial move direction
         Vector3 actualizedMoveDirection = transform.parent.position + localDirection;
         //cons for known outer bounds
-        const int minXBound = 0;
-        const int maxXBound = 70;
-        if (actualizedMoveDirection.x > maxXBound || actualizedMoveDirection.x > minXBound) { return true; }
+        const float minXBound = 3;
+        const float maxXBound = 73;
+        if (actualizedMoveDirection.x > maxXBound || actualizedMoveDirection.x < minXBound) { return true; }
         return false;
     }
 
@@ -149,10 +164,23 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-
-    private void OnCollisionEnter(Collision collision)
+    private void Die()
     {
-        
+        deathPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.GetComponent<Hazard>() != null)
+        {
+            Obsticle obsticle = collider.gameObject.GetComponent<Hazard>();
+            if (obsticle.obstructionType == Obstruction.StaticHazard || obsticle.obstructionType == Obstruction.DynamicHazard)
+            {
+                // player dies
+                Die();
+            }
+        }
     }
 
 }

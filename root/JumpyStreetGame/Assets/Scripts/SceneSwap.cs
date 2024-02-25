@@ -7,7 +7,7 @@ public class SceneSwap : MonoBehaviour
 {
  public void playGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("GameScene");
     }
     
     public void goRules()
