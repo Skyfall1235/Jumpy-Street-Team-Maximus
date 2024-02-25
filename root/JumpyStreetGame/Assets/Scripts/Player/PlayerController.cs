@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
 
     public float moveDistance = 2.5f; // how far the player moves
 
+    //cons for known outer bounds
+    private const float minXBound = 3;
+    private const float maxXBound = 73;
+
     private bool canMove = true; // if the player is able to move
 
     public Animator anim;
@@ -44,6 +48,11 @@ public class PlayerController : MonoBehaviour
         {
             // resets the character controller position if the player is on a log
             charController.center = transform.position;
+            // if a log carrys the player out of bounds, they die
+            if (transform.position.x < minXBound || transform.position.x > maxXBound)
+            {
+                Die();
+            }
         }
     }
 
@@ -189,9 +198,7 @@ public class PlayerController : MonoBehaviour
     {
         //creates a world space vector that shows the potnetial move direction
         Vector3 actualizedMoveDirection = transform.parent.position + localDirection;
-        //cons for known outer bounds
-        const float minXBound = 3;
-        const float maxXBound = 73;
+        
         if (actualizedMoveDirection.x > maxXBound || actualizedMoveDirection.x < minXBound) { return true; }
         return false;
     }
