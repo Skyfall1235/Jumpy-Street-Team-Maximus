@@ -12,24 +12,28 @@ public class PlayerController : MonoBehaviour
         get => transform.parent.GetComponent<CharacterController>();
     }
 
-    public Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
+    [SerializeField] private Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
-    public float moveDelay = 0.1f; // time it takes for the player to move
+    [SerializeField] private float moveDelay = 0.1f; // time it takes for the player to move
 
-    public float moveDistance = 2.5f; // how far the player moves
+    [SerializeField] private float moveDistance = 2.5f; // how far the player moves
 
     //cons for known outer bounds
     private const float minXBound = 3;
     private const float maxXBound = 73;
 
+    private int forwardMoves = 0;
+
     private bool canMove = true; // if the player is able to move
 
-    public Animator anim;
+    [SerializeField] private Animator anim;
 
-    public GameObject deathPanel;
+    [SerializeField] private GameObject deathPanel;
 
-    public UnityEvent onSuccessfulMove = new UnityEvent();
-    public UnityEvent onSuccessfulForwardMove = new UnityEvent();
+    [SerializeField] private TileManager manager;
+
+    [SerializeField] private UnityEvent onSuccessfulMove = new UnityEvent();
+    [SerializeField] private UnityEvent onSuccessfulForwardMove = new UnityEvent();
 
     private void Start()
     {
@@ -82,11 +86,9 @@ public class PlayerController : MonoBehaviour
     }
 
     #region Movement and static obsticle/hazard handling
-
-    //NOT FINISHED
     void AttemptMove(Vector3 moveDir)
     {
-        Debug.Log("Attempting to move");
+        //Debug.Log("Attempting to move");
         //accept input vector, shoot raycast in that direction, detect collider. if collider has a script of type 
 
         GameObject moveSpace = SearchMoveDirection(moveDir);
@@ -128,6 +130,7 @@ public class PlayerController : MonoBehaviour
         if(direction == Vector3.forward * moveDistance)
         {
             onSuccessfulForwardMove.Invoke();
+            TrackForwardMovement();
         }
         // allows the player to move again
         canMove = true;
@@ -135,11 +138,12 @@ public class PlayerController : MonoBehaviour
         SnapPlayerToGrid();
         // attaches player to the tile it is standing on
         SetCurrentTileAsParent();
-        Debug.Log(transform.parent.position);
+        //Debug.Log(transform.parent.position);
     }
 
     private void SetCurrentTileAsParent()
     {
+        Transform currentParent = transform.parent.parent;
         //shoot raycast down to get tile row
         RaycastHit hit;
         const float length = 1.2f;
@@ -168,7 +172,6 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
-
 
     #region Searching the move raycast
     GameObject SearchMoveDirection(Vector3 direction)
@@ -217,6 +220,17 @@ public class PlayerController : MonoBehaviour
         canMove = false;
         deathPanel.SetActive(true);
     }
+
+    private void TrackForwardMovement()
+    {
+        forwardMoves++;
+        //calls the managers generation if the move count is even cause each tile is 2 moves tall
+        if(forwardMoves % 2 == 0)
+        {
+            manager.GenerateNewTile();
+        }
+    }
+
 
     private void OnTriggerEnter(Collider collider)
     {

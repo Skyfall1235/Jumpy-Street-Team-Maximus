@@ -6,24 +6,20 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Grid))]
 public class TileManager : MonoBehaviour
 {
-    const int width = 5;
-
     [Range(0, 100)]
     [SerializeField] private int startingHeight = 2;
     [SerializeField] private int currentHeight;
 
-    public Grid Grid;
+    [SerializeField] private Grid Grid;
 
-    public GameObject[] baseTilePrefabs;
-    public GameObject[] roadTilePrefabs;
-    public GameObject[] riverTilePrefabs;
+    [SerializeField] private GameObject[] baseTilePrefabs;
+    [SerializeField] private GameObject[] roadTilePrefabs;
+    [SerializeField] private GameObject[] riverTilePrefabs;
 
     private Transform ManagerTransform
     {
         get { return transform; }
     }
-
-    public UnityEvent OnTileGenerate = new();
 
     private void Start()
     {
@@ -72,6 +68,19 @@ public class TileManager : MonoBehaviour
                 return baseTilePrefabs;
         }
     }
+
+    public void GenerateNewTile()
+    {
+        GenerateTileRow();
+        currentHeight++; 
+        if(currentHeight > startingHeight + 3)
+        {
+            //destroy the second in the children of the tile manager
+            Transform SecondChildInManager = ManagerTransform.GetChild(0);
+            Destroy(SecondChildInManager.gameObject);
+        }
+    }
+
 
 
     //TO DO: 

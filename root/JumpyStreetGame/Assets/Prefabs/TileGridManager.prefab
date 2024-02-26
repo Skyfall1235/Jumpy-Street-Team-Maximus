@@ -286,8 +286,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3567888387340248250}
   - {fileID: 3525414295949066017}
+  - {fileID: 3567888387340248250}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!156049354 &1714342965306180969
@@ -325,9 +325,6 @@ MonoBehaviour:
   - {fileID: 3365193706571962215, guid: f193c2a4e29e02e41a41a630e3fc50bb, type: 3}
   riverTilePrefabs:
   - {fileID: 4656431871623074459, guid: f563f20a3e09fb040890d75b5789829b, type: 3}
-  OnTileGenerate:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7891242786168878684
 GameObject:
   m_ObjectHideFlags: 0
