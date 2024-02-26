@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -14,9 +15,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Vector3 facingDirection = Vector3.zero;//not yet implemented but would be good to see in editor for debugging
 
-    [SerializeField] private float moveDelay = 0.1f; // time it takes for the player to move
+    [SerializeField] private const float moveDelay = 0.1f; // time it takes for the player to move
 
-    [SerializeField] private float moveDistance = 2.5f; // how far the player moves
+    [SerializeField] private const float moveDistance = 2.5f; // how far the player moves
 
     //cons for known outer bounds
     private const float minXBound = 3;
@@ -29,8 +30,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator anim;
 
     [SerializeField] private GameObject deathPanel;
+    [SerializeField] private TextMeshProUGUI ScoreText;
 
     [SerializeField] private TileManager manager;
+
+    [SerializeField] private AudioSource AVSource;
+    [SerializeField] private AudioClip[] playerAudio;
 
     [SerializeField] private UnityEvent onSuccessfulMove = new UnityEvent();
     [SerializeField] private UnityEvent onSuccessfulForwardMove = new UnityEvent();
@@ -131,6 +136,7 @@ public class PlayerController : MonoBehaviour
         {
             onSuccessfulForwardMove.Invoke();
             TrackForwardMovement();
+            DisplayScore();
         }
         // allows the player to move again
         canMove = true;
@@ -231,6 +237,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void DisplayScore()
+    {
+        ScoreText.text = $"Score: {forwardMoves}";
+    }
+
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -241,6 +252,17 @@ public class PlayerController : MonoBehaviour
             {
                 // player dies
                 Die();
+                switch(obsticle.obstructionType)
+                {
+                    case Obstruction.StaticHazard:
+                        AVSource.PlayOneShot(playerAudio[0]);
+                        break;
+                    case Obstruction.DynamicHazard:
+                        AVSource.PlayOneShot(playerAudio[2]);
+                        AVSource.PlayOneShot(playerAudio[1]);
+                        break;
+                }
+                    
             }
         }
     }
